@@ -5,11 +5,11 @@
 
 int main(int ac, char ** av) {
 
-    std::string savePath = "./data/";
+    std::string savePath;
     std::string url;
     std::string arg;
-    int         maxDepth = 5;
-    bool        recursive = false;
+    int         maxDepth;
+    bool        recursive;
 
     try {
 
@@ -24,8 +24,6 @@ int main(int ac, char ** av) {
             ("h,help", "display this help and exit")
             ("URL", "URL to crawl", cxxopts::value<std::string>());
 
-        if (ac < 2 || ac > 7)
-            std::cout << options.help() << std::endl;
         cxxopts::ParseResult result = options.parse(ac, av);
 
         if (result.count("h")) {
@@ -34,9 +32,15 @@ int main(int ac, char ** av) {
             return (0);
         }
 
+        if (!result.unmatched().empty()) {
+
+            std::cerr << "\033[1;31mError: unmatched argument\033[0m\n";
+            std::cout << options.help() << std::endl;
+            return (1);
+        }
         if (!result.count("URL")) {
 
-            std::cerr << "Error: URL is required\n";
+            std::cerr << "\033[1;31mError: URL is required\033[0m\n";
             std::cout << options.help() << std::endl;
             return (1);
         }
@@ -48,11 +52,19 @@ int main(int ac, char ** av) {
     }
     catch (const std::exception & e) {
 
-        std::cerr << "Error parsing options: " << e.what() << std::endl;
+        std::cerr << "\033[1;31mError parsing options: " << e.what() << "\033[0m" << std::endl;
         return (1);
     }
 
-    Spider::crawlUrl(url, recursive, maxDepth, savePath);
+    try {
+
+        Spider::crawlUrl(url, recursive, maxDepth, savePath);
+    }
+    catch (const std::exception & e) {
+
+        std::cerr << "\033[1;31mError executing crawl: " << e.what() << "\033[0m" << std::endl;
+        return (1);
+    }
 
     return (0);
 }

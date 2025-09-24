@@ -19,6 +19,8 @@ FetchContent_MakeAvailable(cxxopts)
 
 #   -   -   -   -   -   Spider  -   -   -   -   -
 
+find_package(CURL REQUIRED)
+
 set(SPIDER_SOURCES
 
     src/spider/main.cpp
@@ -26,7 +28,7 @@ set(SPIDER_SOURCES
 )
 
 add_executable(spider ${SPIDER_SOURCES})
-target_link_libraries(spider PRIVATE cxxopts)
+target_link_libraries(spider PRIVATE cxxopts CURL::libcurl)
 
 # #   -   -   -   -   -   Scorpion    -   -   -   -   -
 
