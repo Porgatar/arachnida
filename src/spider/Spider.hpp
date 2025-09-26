@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <curl/curl.h>
+
 class Spider {
 
 public:
